@@ -16,42 +16,50 @@ def identify_hash(hash_string):
         case _ if characters == 128 and all(c in "0123456789abcdefABCDEF" for c in hash_string):
             return "SHA-512"
     # Pattern Cases
-        case _ if hash_string.startswith("$2y$") or hash_string.startswith("$2b$"):
-            return "bcrypt"
-        case _ if hash_string.startswith("$argon2"):
-            return "Argon2"
-        case _ if hash_string.startswith("$5$"):
-            return "SHA-256 (Unix)"
-        case _ if hash_string.startswith("$6$"):
-            return "SHA-512 (Unix)"
-        case _ if hash_string.startswith("$1$"):
-            return "MD5 (Unix)"
-        case _ if hash_string.startswith("$apr1$"):
-            return "Apache MD5"
-        case _ if hash_string.startswith("$P$") or hash_string.startswith("$H$"):
-            return "PHPass"
-        case _ if hash_string.startswith("$S$"):
-            return "SHA-512 (WordPress)"
+        # Bcrypt hash types
         case _ if hash_string.startswith("$2a$") or hash_string.startswith("$2x$"):
             return "bcrypt (old version)"
-        case _ if hash_string.startswith("$pbkdf2-sha256$"):
-            return "PBKDF2-SHA256"
-        case _ if hash_string.startswith("$pbkdf2-sha512$"):
-            return "PBKDF2-SHA512"
-        case _ if hash_string.startswith("$scrypt$"):
-            return "scrypt"
+        case _ if hash_string.startswith("$2y$") or hash_string.startswith("$2b$") and characters == 60:
+            return "bcrypt"
+        case _ if hash_string.startswith("$bcrypt$"):
+            return "bcrypt (new version)"
+        # Argon2 hash types
+        case _ if hash_string.startswith("$argon2id$"):
+            return "Argon2id"
         case _ if hash_string.startswith("$argon2i$"):
             return "Argon2i"
         case _ if hash_string.startswith("$argon2d$"):
             return "Argon2d"
-        case _ if hash_string.startswith("$argon2id$"):
-            return "Argon2id"
+        case _ if hash_string.startswith("$argon2"):
+            return "Argon2"
+        # SHA hash types
+        case _ if hash_string.startswith("$5$"):
+            return "SHA-256 (Unix)"
+        case _ if hash_string.startswith("$6$"):
+            return "SHA-512 (Unix)"
+        case _ if hash_string.startswith("$S$"):
+            return "SHA-512 (WordPress)"
+        # MD5 hash types
+        case _ if hash_string.startswith("$1$"):
+            return "MD5 (Unix)"
+        case _ if hash_string.startswith("$apr1$"):
+            return "Apache MD5"
+        # PBKDF2 hash types
         case _ if hash_string.startswith("$pbkdf2$"):
             return "PBKDF2"
-        case _ if hash_string.startswith("$bcrypt$"):
-            return "bcrypt (new version)"
+        case _ if hash_string.startswith("$pbkdf2-sha256$"):
+            return "PBKDF2-SHA256"
+        case _ if hash_string.startswith("$pbkdf2-sha512$"):
+            return "PBKDF2-SHA512"
+        # scrypt hash types
+        case _ if hash_string.startswith("$scrypt$"):
+            return "scrypt"
+        # Base hash types
         case _ if hash_string.endswith("==") or hash_string.endswith("="):
             return "Base64"
+        # Misc hash types
+        case _ if hash_string.startswith("$P$") or hash_string.startswith("$H$"):
+            return "PHPass"
         case _:
             return "Unknown"
 
