@@ -1,16 +1,19 @@
+import pandas as pd
+from tabulate import tabulate
+
 text = input("Enter the hash to identify: ")
 characters = len(text) # Length of hash in characters
 
 def identify_hash(hash_string):
     match hash_string:
     # Character Cases
-        case _ if characters == 32:
+        case _ if characters == 32 and all(c in "0123456789abcdefABCDEF" for c in hash_string):
             return "MD5"
-        case _ if characters == 40:
+        case _ if characters == 40 and all(c in "0123456789abcdefABCDEF" for c in hash_string):
             return "SHA-1"
-        case _ if characters == 64:
+        case _ if characters == 64 and all(c in "0123456789abcdefABCDEF" for c in hash_string):
             return "SHA-256"
-        case _ if characters == 128:
+        case _ if characters == 128 and all(c in "0123456789abcdefABCDEF" for c in hash_string):
             return "SHA-512"
     # Pattern Cases
         case _ if hash_string.startswith("$2y$") or hash_string.startswith("$2b$"):
@@ -52,4 +55,13 @@ def identify_hash(hash_string):
         case _:
             return "Unknown"
 
-print(f"The hash type is: {identify_hash(text)}")
+# print(f"The hash type is: {identify_hash(text)}")
+
+data = {
+    "Hash": [text],
+    "Type": [identify_hash(text)]
+}
+
+table = pd.DataFrame(data)
+
+print(tabulate(table, headers='keys', tablefmt='grid', showindex=False))
